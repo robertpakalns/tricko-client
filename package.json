@@ -1,0 +1,12 @@
+{
+  "name": "tricko-client",
+  "version": "1.0.0",
+  "author": "robertpakalns",
+  "type": "module",
+  "scripts": {
+    "tauri": "tauri"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.2.5"
+  }
+}
