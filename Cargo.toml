@@ -1,9 +1,12 @@
 [package]
 name = "tricko-client"
-version = "0.0.1"
+version = "1.0.0"
 edition = "2024"
 
 [dependencies]
 ico = "0.4.0"
 tao = "0.33.0"
 wry = "0.51.0"
+
+[build-dependencies]
+winres = "0.1.12"

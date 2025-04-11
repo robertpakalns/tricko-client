@@ -2,12 +2,16 @@
     <Package Id="pro.tricko.client"
         Name="Tricko Client"
         Language="1033"
-        Version="0.0.1"
+        Version="!(bind.FileVersion.TrickoExe)"
         Manufacturer="robertpakalns"
         UpgradeCode="db493601-88aa-4011-9d27-8a573e938c94"
         InstallerVersion="500"
         Compressed="yes">
 
+        <Property Id="ARPPRODUCTICON" Value="TrickoIcon" />
+        <MajorUpgrade
+            DowngradeErrorMessage="A newer version of [ProductName] is already installed."
+            AllowSameVersionUpgrades="yes" />
         <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
         <StandardDirectory Id="AppDataFolder">
@@ -21,24 +25,9 @@
             </Component>
         </DirectoryRef>
 
-        <DirectoryRef Id="INSTALLFOLDER">
-            <Component Id="TrickoPanel" Guid="d2f9d4bc-c348-4b0c-b5b7-bfbdac44a72b">
-                <RegistryKey Root="HKCU"
-                    Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\Tricko Client">
-                    <RegistryValue Name="DisplayIcon" Type="string" Value="[INSTALLFOLDER]icon.ico" />
-                    <RegistryValue Name="DisplayName" Type="string" Value="Tricko Client" />
-                    <RegistryValue Name="DisplayVersion" Type="string" Value="0.0.1" />
-                    <RegistryValue Name="Publisher" Type="string" Value="robertpakalns" />
-                    <RegistryValue Name="UninstallString" Type="string"
-                        Value="[SystemFolder]msiexec.exe /x [ProductCode]" />
-                </RegistryKey>
-            </Component>
-        </DirectoryRef>
-
         <Feature Id="DefaultFeature" Level="1">
             <ComponentRef Id="TrickoComponent" />
             <ComponentRef Id="TrickoShortcut" />
-            <ComponentRef Id="TrickoPanel" />
         </Feature>
 
         <StandardDirectory Id="DesktopFolder">
@@ -55,5 +44,17 @@
         </StandardDirectory>
 
         <Icon Id="TrickoIcon" SourceFile=".\frontend\icon.ico" />
+
+        <CustomAction
+            Id="LaunchApplication"
+            FileRef="TrickoExe"
+            ExeCommand=""
+            Execute="immediate"
+            Return="asyncNoWait"
+            Impersonate="yes" />
+
+        <InstallExecuteSequence>
+            <Custom Action="LaunchApplication" After="InstallFinalize"></Custom>
+        </InstallExecuteSequence>
     </Package>
 </Wix>
