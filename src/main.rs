@@ -7,7 +7,7 @@ use tao::{
     event_loop::{ControlFlow, EventLoop},
     window::{Fullscreen, WindowBuilder},
 };
-use wry::WebViewBuilder;
+use wry::{WebView, WebViewBuilder};
 
 mod utils;
 
@@ -26,30 +26,50 @@ fn main() {
             .unwrap(),
     ));
 
-    let window_clone = window.clone();
-    let builder = WebViewBuilder::new()
-        .with_url("http://tricko.pro")
-        .with_ipc_handler(move |message| {
-            if message.body() == "toggle_fullscreen" {
-                let window = window_clone.lock().unwrap();
-                if window.fullscreen().is_some() {
-                    window.set_fullscreen(None);
-                } else {
-                    window.set_fullscreen(Some(Fullscreen::Borderless(None)));
-                }
-            }
-        });
+    let webview: Arc<Mutex<Option<WebView>>> = Arc::new(Mutex::new(None));
+    let window_clone = Arc::clone(&window);
+    let webview_clone = Arc::clone(&webview);
 
-    let js_code: &str = include_str!("../frontend/script.js");
-    let webview = builder.build(&*window.lock().unwrap()).unwrap();
-    webview.evaluate_script(&js_code).unwrap();
+    let js_code = include_str!("../frontend/script.js");
+
+    *webview.lock().unwrap() = Some(
+        WebViewBuilder::new()
+            .with_url("http://tricko.pro")
+            .with_ipc_handler(move |message| {
+                if message.body() == "toggle_fullscreen" {
+                    let window = window_clone.lock().unwrap();
+                    if window.fullscreen().is_some() {
+                        window.set_fullscreen(None);
+                    } else {
+                        window.set_fullscreen(Some(Fullscreen::Borderless(None)));
+                    }
+                }
+                if message.body() == "toggle_devtools" {
+                    if let Some(webview) = &*webview_clone.lock().unwrap() {
+                        webview.open_devtools();
+                    }
+                }
+            })
+            .build(&*window.lock().unwrap())
+            .unwrap(),
+    );
+
+    webview
+        .lock()
+        .unwrap()
+        .as_ref()
+        .unwrap()
+        .evaluate_script(js_code)
+        .unwrap();
 
     event_loop.run(move |event, _, control_flow| {
-        if let Event::WindowEvent {
-            event: WindowEvent::CloseRequested,
-            ..
-        } = event
-        {
+        if matches!(
+            event,
+            Event::WindowEvent {
+                event: WindowEvent::CloseRequested,
+                ..
+            }
+        ) {
             *control_flow = ControlFlow::Exit;
         }
     });

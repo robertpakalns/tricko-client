@@ -1,6 +1,18 @@
+const { postMessage } = window.ipc
+
 document.addEventListener("keydown", e => {
-    if (e.key === "F11") {
-        e.preventDefault()
-        window.ipc.postMessage("toggle_fullscreen")
+
+    switch (e.key) {
+        case "F11":
+            e.preventDefault()
+            postMessage("toggle_fullscreen")
+            break
+        case "F12":
+            e.preventDefault()
+            postMessage("toggle_devtools")
+            break
+        default:
+            break
     }
+
 })
