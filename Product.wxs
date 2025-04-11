@@ -1,0 +1,59 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+    <Package Id="pro.tricko.client"
+        Name="Tricko Client"
+        Language="1033"
+        Version="0.0.1"
+        Manufacturer="robertpakalns"
+        UpgradeCode="db493601-88aa-4011-9d27-8a573e938c94"
+        InstallerVersion="500"
+        Compressed="yes">
+
+        <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+        <StandardDirectory Id="AppDataFolder">
+            <Directory Id="INSTALLFOLDER" Name="Tricko Client" />
+        </StandardDirectory>
+
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="TrickoComponent" Guid="b804c865-45cb-41da-989c-94e245c4101e">
+                <File Id="TrickoExe" Source=".\target\release\tricko-client.exe" KeyPath="yes" />
+                <File Id="TrickoIcon" Source=".\frontend\icon.ico" />
+            </Component>
+        </DirectoryRef>
+
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Component Id="TrickoPanel" Guid="d2f9d4bc-c348-4b0c-b5b7-bfbdac44a72b">
+                <RegistryKey Root="HKCU"
+                    Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\Tricko Client">
+                    <RegistryValue Name="DisplayIcon" Type="string" Value="[INSTALLFOLDER]icon.ico" />
+                    <RegistryValue Name="DisplayName" Type="string" Value="Tricko Client" />
+                    <RegistryValue Name="DisplayVersion" Type="string" Value="0.0.1" />
+                    <RegistryValue Name="Publisher" Type="string" Value="robertpakalns" />
+                    <RegistryValue Name="UninstallString" Type="string"
+                        Value="[SystemFolder]msiexec.exe /x [ProductCode]" />
+                </RegistryKey>
+            </Component>
+        </DirectoryRef>
+
+        <Feature Id="DefaultFeature" Level="1">
+            <ComponentRef Id="TrickoComponent" />
+            <ComponentRef Id="TrickoShortcut" />
+            <ComponentRef Id="TrickoPanel" />
+        </Feature>
+
+        <StandardDirectory Id="DesktopFolder">
+            <Component Id="TrickoShortcut" Guid="d6e0b202-2f7e-4f84-8e11-1ed66a731b3d">
+                <Shortcut Id="DesktopShortcut"
+                    Name="Tricko Client"
+                    Description="Run Tricko Client"
+                    Target="[INSTALLFOLDER]tricko-client.exe"
+                    WorkingDirectory="INSTALLFOLDER"
+                    Icon="TrickoIcon"
+                    IconIndex="0"
+                    Directory="DesktopFolder" />
+            </Component>
+        </StandardDirectory>
+
+        <Icon Id="TrickoIcon" SourceFile=".\frontend\icon.ico" />
+    </Package>
+</Wix>
