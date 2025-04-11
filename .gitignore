@@ -1,4 +1,3 @@
 target
 obj
-*.wixpdb
-*.msi
+dist
