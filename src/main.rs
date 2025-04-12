@@ -1,15 +1,21 @@
 #![windows_subsystem = "windows"]
 
-use std::sync::{Arc, Mutex};
+use std::sync::{Arc, Mutex, mpsc};
 use tao::{
     dpi::LogicalSize,
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
     window::{Fullscreen, WindowBuilder},
 };
-use wry::{WebView, WebViewBuilder};
+use wry::WebViewBuilder;
 
+mod server;
 mod utils;
+
+enum Command {
+    ToggleFullscreen,
+    ToggleDevtools,
+}
 
 fn main() {
     let window_width: i32 = 800;
@@ -26,30 +32,11 @@ fn main() {
             .unwrap(),
     ));
 
-    let webview: Arc<Mutex<Option<WebView>>> = Arc::new(Mutex::new(None));
-    let window_clone = Arc::clone(&window);
-    let webview_clone = Arc::clone(&webview);
-
-    let js_code = include_str!("../frontend/script.js");
+    let webview = Arc::new(Mutex::new(None));
 
     *webview.lock().unwrap() = Some(
         WebViewBuilder::new()
             .with_url("http://tricko.pro")
-            .with_ipc_handler(move |message| {
-                if message.body() == "toggle_fullscreen" {
-                    let window = window_clone.lock().unwrap();
-                    if window.fullscreen().is_some() {
-                        window.set_fullscreen(None);
-                    } else {
-                        window.set_fullscreen(Some(Fullscreen::Borderless(None)));
-                    }
-                }
-                if message.body() == "toggle_devtools" {
-                    if let Some(webview) = &*webview_clone.lock().unwrap() {
-                        webview.open_devtools();
-                    }
-                }
-            })
             .build(&*window.lock().unwrap())
             .unwrap(),
     );
@@ -59,17 +46,44 @@ fn main() {
         .unwrap()
         .as_ref()
         .unwrap()
-        .evaluate_script(js_code)
+        .evaluate_script(include_str!("../frontend/script.js"))
         .unwrap();
 
+    let (tx, rx) = mpsc::channel::<Command>();
+
+    server::start_server(tx);
+
+    let window_clone = Arc::clone(&window);
+    let webview_clone = Arc::clone(&webview);
+
     event_loop.run(move |event, _, control_flow| {
-        if matches!(
-            event,
-            Event::WindowEvent {
-                event: WindowEvent::CloseRequested,
-                ..
+        *control_flow = ControlFlow::Poll;
+
+        while let Ok(command) = rx.try_recv() {
+            match command {
+                Command::ToggleFullscreen => {
+                    let window = window_clone.lock().unwrap();
+                    let is_fullscreen: bool = window.fullscreen().is_some();
+                    if is_fullscreen {
+                        window.set_fullscreen(None);
+                    } else {
+                        window.set_fullscreen(Some(Fullscreen::Borderless(None)));
+                    }
+                }
+                Command::ToggleDevtools => {
+                    if let Some(webview) = &*webview_clone.lock().unwrap() {
+                        println!("Opening devtools");
+                        webview.open_devtools();
+                    }
+                }
             }
-        ) {
+        }
+
+        if let Event::WindowEvent {
+            event: WindowEvent::CloseRequested,
+            ..
+        } = event
+        {
             *control_flow = ControlFlow::Exit;
         }
     });
