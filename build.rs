@@ -1,4 +1,5 @@
-use std::process::{Command, exit};
+use std::env;
+use std::process::exit;
 use winres::WindowsResource;
 
 fn main() {
@@ -14,18 +15,6 @@ fn main() {
         .set("FileVersion", env!("CARGO_PKG_VERSION"));
 
     if let Err(_) = res.compile() {
-        exit(1);
-    }
-
-    let output = Command::new("wix")
-        .arg("build")
-        .arg("build.wxs")
-        .arg("-out")
-        .arg("./dist/tricko-client-win.msi")
-        .output()
-        .expect("Failed to execute wix build");
-
-    if !output.status.success() {
         exit(1);
     }
 }
