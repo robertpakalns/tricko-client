@@ -17,10 +17,7 @@ document.addEventListener("keydown", e => {
 
 })
 
-const updateUrl = () => {
-    const url = encodeURIComponent(window.location.pathname)
-    fetch(`${base_url}/change_path?url=${url}`, { method: "GET" })
-}
+const updateUrl = () => sendMessage(`change_path?url=${encodeURIComponent(window.location.pathname)}`)
 
 const _pushState = history.pushState
 history.pushState = function () {
@@ -37,3 +34,12 @@ history.replaceState = function () {
 window.addEventListener("popstate", updateUrl)
 
 updateUrl()
+
+document.addEventListener("DOMContentLoaded", () =>
+    document.body.addEventListener("click", e => {
+        const target = e.target.closest('a[target="_blank"]')
+        if (!target) return
+        e.preventDefault()
+        sendMessage(`open_url?url=${encodeURIComponent(target.href)}`)
+    })
+)

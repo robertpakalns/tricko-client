@@ -1,6 +1,8 @@
 use crate::Command;
 use std::{sync::mpsc::Sender, thread};
 use tiny_http::{Header, Method, Response, Server, StatusCode};
+use urldecode::decode;
+use webbrowser;
 
 pub fn start_server(webview_tx: Sender<Command>, discord_tx: Sender<String>) {
     thread::spawn(move || {
@@ -15,7 +17,11 @@ pub fn start_server(webview_tx: Sender<Command>, discord_tx: Sender<String>) {
                 } else if url == "/toggle_devtools" {
                     webview_tx.send(Command::ToggleDevtools).ok();
                 } else if url.starts_with("/change_path") {
-                    discord_tx.send(url.to_string()).ok();
+                    discord_tx.send(decode(url)).ok();
+                } else if url.starts_with("/open_url") {
+                    if let Some(external_url) = decode(url).splitn(2, "=").nth(1) {
+                        webbrowser::open(external_url).ok();
+                    }
                 }
             }
 

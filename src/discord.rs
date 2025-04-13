@@ -9,7 +9,6 @@ use std::{
     thread::{sleep, spawn},
     time::{Duration, SystemTime, UNIX_EPOCH},
 };
-use urldecode::decode;
 
 pub fn discord_rpc(rx: Receiver<String>) {
     spawn(move || {
@@ -38,7 +37,7 @@ pub fn discord_rpc(rx: Receiver<String>) {
 
         loop {
             if let Some(new_url) = rx.try_iter().last() {
-                if let Some(value) = decode(new_url).splitn(2, "=").nth(1) {
+                if let Some(value) = new_url.splitn(2, "=").nth(1) {
                     let parts: Vec<&str> = value.split("/").skip(1).collect();
                     detail = match parts.as_slice() {
                         [p1] if is_game(p1) => format!("{} pate", utils::cap_str(p1)),
