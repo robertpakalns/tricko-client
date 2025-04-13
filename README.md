@@ -5,6 +5,7 @@ A desktop client for Tricko.pro
 * Developer Tools (`F12`)
 * Discord RPC Support
 * Fullscreen (`F11`)
+* Links in External Browser
 
 ### Dependencies
 Tricko Client is based on Rust programming language (`tao` + `wry`) with `WiX` installer support (`.msi`). For more information, check `Cargo.toml` file.
