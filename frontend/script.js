@@ -16,3 +16,24 @@ document.addEventListener("keydown", e => {
     }
 
 })
+
+const updateUrl = () => {
+    const url = encodeURIComponent(window.location.pathname)
+    fetch(`${base_url}/change_path?url=${url}`, { method: "GET" })
+}
+
+const _pushState = history.pushState
+history.pushState = function () {
+    _pushState.apply(history, arguments)
+    updateUrl()
+}
+
+const _replaceState = history.replaceState
+history.replaceState = function () {
+    _replaceState.apply(history, arguments)
+    updateUrl()
+}
+
+window.addEventListener("popstate", updateUrl)
+
+updateUrl()

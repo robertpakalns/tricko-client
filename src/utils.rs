@@ -41,3 +41,11 @@ pub fn load_icon() -> Icon {
 
     Icon::from_rgba(rgba, width, height).expect("Failed to create icon")
 }
+
+pub fn cap_str(string: &str) -> String {
+    if let Some((first, rest)) = string.split_at(1).into() {
+        first.to_uppercase() + rest
+    } else {
+        String::new()
+    }
+}

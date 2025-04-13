@@ -1,6 +1,10 @@
 #![windows_subsystem = "windows"]
 
-use std::sync::{Arc, Mutex, mpsc};
+mod discord;
+mod server;
+mod utils;
+
+use std::sync::{mpsc, Arc, Mutex};
 use tao::{
     dpi::LogicalSize,
     event::{Event, WindowEvent},
@@ -9,15 +13,17 @@ use tao::{
 };
 use wry::WebViewBuilder;
 
-mod server;
-mod utils;
-
 enum Command {
     ToggleFullscreen,
     ToggleDevtools,
 }
 
 fn main() {
+    let (webview_tx, webview_rx) = mpsc::channel::<Command>();
+    let (discord_tx, discord_rx) = mpsc::channel::<String>();
+
+    discord::discord_rpc(discord_rx);
+
     let window_width: i32 = 800;
     let window_height: i32 = 600;
 
@@ -49,9 +55,7 @@ fn main() {
         .evaluate_script(include_str!("../frontend/script.js"))
         .unwrap();
 
-    let (tx, rx) = mpsc::channel::<Command>();
-
-    server::start_server(tx);
+    server::start_server(webview_tx, discord_tx);
 
     let window_clone = Arc::clone(&window);
     let webview_clone = Arc::clone(&webview);
@@ -59,7 +63,7 @@ fn main() {
     event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Poll;
 
-        while let Ok(command) = rx.try_recv() {
+        while let Ok(command) = webview_rx.try_recv() {
             match command {
                 Command::ToggleFullscreen => {
                     let window = window_clone.lock().unwrap();
@@ -72,7 +76,6 @@ fn main() {
                 }
                 Command::ToggleDevtools => {
                     if let Some(webview) = &*webview_clone.lock().unwrap() {
-                        println!("Opening devtools");
                         webview.open_devtools();
                     }
                 }
