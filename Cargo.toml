@@ -8,6 +8,7 @@ discord-rich-presence = "0.2.5"
 ico = "0.4.0"
 tao = "0.33.0"
 tiny_http = "0.12.0"
+url = "2.5.4"
 urldecode = "0.1.1"
 webbrowser = "1.0.4"
 wry = { version = "0.51.0", features = ["devtools"] }

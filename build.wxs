@@ -20,6 +20,19 @@
             <Component Id="TrickoComponent" Guid="b804c865-45cb-41da-989c-94e245c4101e">
                 <File Id="TrickoExe" Source=".\target\release\tricko-client.exe" KeyPath="yes" />
                 <File Id="TrickoIcon" Source=".\frontend\icon.ico" />
+
+                <RegistryKey Root="HKCR" Key="tricko">
+                    <RegistryValue Name="Default" Type="string" Value="URL:Tricko Protocol" />
+                    <RegistryValue Name="URL Protocol" Type="string" Value="" />
+                    <RegistryKey Key="shell">
+                        <RegistryKey Key="open">
+                            <RegistryKey Key="command">
+                                <RegistryValue Name="Default" Type="string"
+                                    Value="&quot;[INSTALLFOLDER]tricko-client.exe&quot; &quot;%1&quot;" />
+                            </RegistryKey>
+                        </RegistryKey>
+                    </RegistryKey>
+                </RegistryKey>
             </Component>
         </DirectoryRef>
 

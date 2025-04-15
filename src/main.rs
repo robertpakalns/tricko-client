@@ -4,13 +4,17 @@ mod discord;
 mod server;
 mod utils;
 
-use std::sync::{mpsc, Arc, Mutex};
+use std::{
+    env,
+    sync::{mpsc, Arc, Mutex},
+};
 use tao::{
     dpi::LogicalSize,
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
     window::{Fullscreen, WindowBuilder},
 };
+use url::{form_urlencoded, Url};
 use wry::WebViewBuilder;
 
 enum Command {
@@ -59,6 +63,29 @@ fn main() {
 
     let window_clone = Arc::clone(&window);
     let webview_clone = Arc::clone(&webview);
+
+    // Protocol
+    if let Some(protocol_url) = env::args().nth(1) {
+        if let Ok(url) = Url::parse(&protocol_url) {
+            if url.scheme() == "tricko" {
+                if let Some(value) = form_urlencoded::parse(url.query().unwrap_or("").as_bytes())
+                    .find(|(key, _)| key == "url")
+                    .map(|(_, v)| v.into_owned())
+                {
+                    let new_url = format!("https://tricko.pro{}", value);
+                    if let Some(webview) = &*webview.lock().unwrap() {
+                        webview
+                            .evaluate_script(&format!(
+                                "{}, window.location.href = '{}';",
+                                include_str!("../frontend/script.js"),
+                                new_url
+                            ))
+                            .unwrap();
+                    }
+                }
+            }
+        }
+    }
 
     event_loop.run(move |event, _, control_flow| {
         *control_flow = ControlFlow::Poll;

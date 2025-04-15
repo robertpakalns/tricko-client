@@ -20,10 +20,10 @@ pub fn discord_rpc(rx: Receiver<String>) {
             .as_secs() as i64;
 
         let activity = Activity::new()
-            .state("Voxiom.io Player abc")
+            .state("Searching Stats")
             .details("Searching Stats")
             .buttons(vec![
-                Button::new("Website", "https://tricko.pro"),
+                Button::new("GitHub", "https://github.com/robertpakalns/tricko-client"),
                 Button::new("Community Server", "https://discord.gg/yPjrUrvSzv"),
             ])
             .timestamps(Timestamps::new().start(timestamp));
@@ -32,7 +32,7 @@ pub fn discord_rpc(rx: Receiver<String>) {
         client.connect().unwrap();
         client.set_activity(activity.clone()).unwrap();
 
-        let mut detail: String = "Searching Stats".to_string();
+        let mut detail: String = String::new();
         let is_game = |p: &str| matches!(p, "cryzen" | "kirka" | "vectaria" | "voxiom");
 
         loop {
