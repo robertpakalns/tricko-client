@@ -10,11 +10,11 @@ pub fn run() {
     Builder::default()
         .invoke_handler(generate_handler![toggle_fullscreen])
         .setup(|app| {
-            let window = app.get_webview_window("main").unwrap();
+            let main_webview = app.get_webview_window("main").unwrap();
 
             #[cfg(debug_assertions)]
             {
-                window
+                main_webview
                     .navigate("http://localhost:5173".parse().unwrap())
                     .unwrap();
             }
