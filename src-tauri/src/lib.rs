@@ -1,4 +1,6 @@
-use tauri::{generate_context, generate_handler, Builder, Manager, Window};
+use tauri::{
+    generate_context, generate_handler, Builder, WebviewUrl, WebviewWindowBuilder, Window,
+};
 
 #[tauri::command]
 fn toggle_fullscreen(window: Window) {
@@ -10,23 +12,31 @@ pub fn run() {
     Builder::default()
         .invoke_handler(generate_handler![toggle_fullscreen])
         .setup(|app| {
-            let main_webview = app.get_webview_window("main").unwrap();
-
             #[cfg(debug_assertions)]
             {
-                main_webview
-                    .navigate("http://localhost:5173".parse().unwrap())
-                    .unwrap();
+                WebviewWindowBuilder::new(
+                    app,
+                    "main",
+                    WebviewUrl::External("http://localhost:5173".parse().unwrap()),
+                )
+                .title("Tricko Client")
+                .build()
+                .unwrap();
             }
 
             #[cfg(not(debug_assertions))]
             {
-                main_webview
-                    .navigate("https://tricko.pro".parse().unwrap())
-                    .unwrap();
-                main_webview
-                    .eval(include_str!("../../frontend-dist/script.js"))
-                    .unwrap();
+                let script = include_str!("../../frontend-dist/script.js");
+
+                WebviewWindowBuilder::new(
+                    app,
+                    "main",
+                    WebviewUrl::External("https://tricko.pro".parse().unwrap()),
+                )
+                .title("Tricko Client")
+                .initialization_script(script)
+                .build()
+                .unwrap();
             }
 
             Ok(())
