@@ -6,6 +6,11 @@ const injectedScript = '<script type="module" src="/src/main.js"></script>'
 export default defineConfig({
     server: {
         proxy: {
+            "/assets/": domain,
+            "/": {
+                target: domain,
+                changeOrigin: true
+            },
             "^/(?!@vite|src|node_modules|\.vite).*": {
                 target: domain,
                 changeOrigin: true,
