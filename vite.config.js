@@ -6,13 +6,13 @@ const injectedScript = '<script type="module" src="/src/main.js"></script>'
 export default defineConfig({
     server: {
         proxy: {
-            "/": {
+            "^/(?!@vite|src|node_modules|\.vite).*": {
                 target: domain,
                 changeOrigin: true,
                 selfHandleResponse: true,
                 bypass: (req, res) => {
-                    if (req.url.startsWith("/src/") || req.url.startsWith("/@vite/")) return req.url
-                    if (req.headers.accept?.includes("text/html")) return fetch(domain)
+                    if (!req.headers.accept?.includes("text/html")) return req.url
+                    return fetch(domain)
                         .then(r => r.text())
                         .then(html => {
                             res.setHeader("content-type", "text/html")
