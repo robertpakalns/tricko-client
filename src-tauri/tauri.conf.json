@@ -23,11 +23,12 @@
     "active": true,
     "targets": "all",
     "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
+      "icons/tricko-32.png",
+      "icons/tricko-48.png",
+      "icons/tricko-64.png",
+      "icons/tricko-128.png",
+      "icons/tricko-256.png",
+      "icons/tricko.ico"
     ]
   }
 }
