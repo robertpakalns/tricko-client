@@ -18,6 +18,7 @@ fn open_url(url: String) {
 
 pub fn run() {
     Builder::default()
+        .plugin(tauri_plugin_deep_link::init())
         .invoke_handler(generate_handler![
             toggle_fullscreen,
             open_url,

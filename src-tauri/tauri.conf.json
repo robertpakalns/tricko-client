@@ -19,6 +19,15 @@
       "csp": null
     }
   },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": [
+          "tricko"
+        ]
+      }
+    }
+  },
   "bundle": {
     "publisher": "robertpakalns",
     "active": true,

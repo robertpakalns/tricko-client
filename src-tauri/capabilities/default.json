@@ -2,10 +2,27 @@
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window",
+  "remote": {
+    "urls": [
+      "http://localhost:5173",
+      "https://tricko.pro"
+    ]
+  },
+  "plugins": {
+    "allow": [
+      "deep-link"
+    ]
+  },
+  "events": {
+    "allow": [
+      "deep-link"
+    ]
+  },
   "windows": [
     "main"
   ],
   "permissions": [
-    "core:default"
+    "core:default",
+    "deep-link:default"
   ]
 }
