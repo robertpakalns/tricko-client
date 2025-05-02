@@ -6,8 +6,9 @@ window.fetch = function (...args) {
     return _fetch(...args)
 }
 
-import { invoke } from '@tauri-apps/api/core'
-console.log("injected!!!!")
+import { invoke } from "@tauri-apps/api/core"
+
+console.log("injected!!!")
 document.querySelectorAll("h2").forEach(el => el.style.color = "lime")
 document.addEventListener("keyup", async e => {
     if (e.key === "F11") {
@@ -15,3 +16,6 @@ document.addEventListener("keyup", async e => {
         await invoke("toggle_fullscreen")
     }
 })
+
+import { drpc } from "./drpc.js"
+drpc()

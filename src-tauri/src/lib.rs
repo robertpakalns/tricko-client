@@ -2,6 +2,8 @@ use tauri::{
     generate_context, generate_handler, Builder, WebviewUrl, WebviewWindowBuilder, Window,
 };
 
+mod discord;
+
 #[tauri::command]
 fn toggle_fullscreen(window: Window) {
     let is_fullscreen = window.is_fullscreen().unwrap_or(false);
@@ -10,7 +12,11 @@ fn toggle_fullscreen(window: Window) {
 
 pub fn run() {
     Builder::default()
-        .invoke_handler(generate_handler![toggle_fullscreen])
+        .invoke_handler(generate_handler![
+            toggle_fullscreen,
+            discord::drpc_init,
+            discord::drpc_set_detail
+        ])
         .setup(|app| {
             #[cfg(debug_assertions)]
             {

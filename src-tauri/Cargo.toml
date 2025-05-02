@@ -13,4 +13,5 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2.2.0", features = [] }
 
 [dependencies]
+discord-rich-presence = "0.2.5"
 tauri = { version = "2.5.1", features = ["devtools"] }
