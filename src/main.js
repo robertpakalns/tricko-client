@@ -7,15 +7,20 @@ window.fetch = function (...args) {
 }
 
 import { invoke } from "@tauri-apps/api/core"
-
-console.log("injected!!!")
-document.querySelectorAll("h2").forEach(el => el.style.color = "lime")
-document.addEventListener("keyup", async e => {
-    if (e.key === "F11") {
-        e.preventDefault()
-        await invoke("toggle_fullscreen")
-    }
-})
-
+import { setKeybinding } from "./keybinding.js"
 import { drpc } from "./drpc.js"
+
+setKeybinding()
 drpc()
+
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("injected!!!")
+    document.querySelectorAll("h2").forEach(el => el.style.color = "lime")
+
+    document.body.addEventListener("click", async e => {
+        const target = e.target.closest('a[target="_blank"]')
+        if (!target) return
+        e.preventDefault()
+        await invoke("open_url", { url: target.href })
+    })
+})

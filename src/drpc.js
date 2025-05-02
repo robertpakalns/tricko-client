@@ -3,7 +3,7 @@ import { invoke } from "@tauri-apps/api/core"
 const games = new Set(["cryzen", "kirka", "vectaria", "voxiom"])
 const capStr = s => s ? s[0].toUpperCase() + s.slice(1) : ""
 const setDetail = path => {
-    const parts = decodeURIComponent(path).split("=").pop().split("/").slice(1)
+    const parts = path.split("=").pop().split("/").slice(1)
     const [game, section, detail] = parts
 
     if (!games.has(game)) return "Searching Stats"
@@ -13,7 +13,7 @@ const setDetail = path => {
     return `${capStr(game)} ${section}: ${detail}`
 }
 
-const updateUrl = async () => await invoke("drpc_set_detail", { text: setDetail(encodeURIComponent(window.location.pathname)) })
+const updateUrl = async () => await invoke("drpc_set_detail", { text: setDetail(window.location.pathname) })
 
 export const drpc = async () => {
     await invoke("drpc_init")
