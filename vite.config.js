@@ -6,6 +6,8 @@ const injectedScript = '<script type="module" src="/src/main.js"></script>'
 
 export default defineConfig({
     server: {
+        port: 5173,
+        strictPort: true,
         proxy: {
             "/assets/": domain,
             "/api/": {

@@ -1,16 +1,11 @@
-// DEV
-const _fetch = window.fetch
-window.fetch = function (...args) {
-    const [url, ...a] = args
-    if (url.startsWith("https://api.tricko.pro")) return _fetch(url.replace("https://api.tricko.pro", "/api"), ...a)
-    return _fetch(...args)
-}
-
+// MAIN
 import { invoke } from "@tauri-apps/api/core"
 import { setKeybinding } from "./keybinding.js"
+import { devUtils } from "./dev.js"
 import { drpc } from "./drpc.js"
 
 setKeybinding()
+devUtils()
 drpc()
 
 document.addEventListener("DOMContentLoaded", () => {
