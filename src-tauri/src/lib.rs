@@ -10,10 +10,17 @@ fn toggle_fullscreen(window: Window) {
     window.set_fullscreen(!is_fullscreen).unwrap();
 }
 
+#[tauri::command]
+fn open_url(url: String) {
+    println!("{}", &url);
+    webbrowser::open(&url).ok();
+}
+
 pub fn run() {
     Builder::default()
         .invoke_handler(generate_handler![
             toggle_fullscreen,
+            open_url,
             discord::drpc_init,
             discord::drpc_set_detail
         ])
