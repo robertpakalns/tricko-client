@@ -13,7 +13,7 @@ const setDetail = path => {
     return `${capStr(game)} ${section}: ${detail}`
 }
 
-const updateUrl = async () => await invoke("drpc_set_detail", { text: setDetail(window.location.pathname) })
+const updateUrl = () => invoke("drpc_set_detail", { text: setDetail(window.location.pathname) })
 
 export const drpc = async () => {
     await invoke("drpc_init")
