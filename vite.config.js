@@ -2,7 +2,7 @@ import { defineConfig } from "vite"
 
 const domain = "https://tricko.pro"
 const apiDomain = "https://api.tricko.pro"
-const injectedScript = '<script type="module" src="/src/main.js"></script>'
+const injectedScript = '<script type="module" defer src="/src/main.js"></script>'
 
 export default defineConfig({
     server: {

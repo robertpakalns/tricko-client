@@ -8,9 +8,12 @@ export const devUtils = () => {
     console.log("Dev mode ON")
 
     const _fetch = window.fetch
-    window.fetch = function (...args) {
+    window.fetch = (...args) => {
         const [url, ...options] = args
-        if (url.startsWith(apiURL)) return _fetch(url.replace(apiURL, "/api"), ...options)
+        const { href } = new URL(url)
+
+        if (href.startsWith(apiURL)) return _fetch(href.replace(apiURL, "/api"), ...options)
+
         return _fetch(...args)
     }
 }
