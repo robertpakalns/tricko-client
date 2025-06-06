@@ -16,8 +16,6 @@ const setDetail = path => {
 const updateUrl = () => invoke("drpc_set_detail", { text: setDetail(window.location.pathname) })
 
 export const drpc = async () => {
-    await invoke("drpc_init")
-
     const _pushState = history.pushState
     history.pushState = async function () {
         _pushState.apply(history, arguments)
