@@ -20,13 +20,11 @@ fn open_url(url: String) {
 fn main() {
     discord::drpc_init();
 
-    
     Builder::default()
         .plugin(tauri_plugin_deep_link::init())
         .invoke_handler(generate_handler![
             toggle_fullscreen,
             open_url,
-            // discord::drpc_init,
             discord::drpc_set_detail
         ])
         .setup(|app| {

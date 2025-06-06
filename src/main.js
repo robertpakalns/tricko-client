@@ -1,7 +1,7 @@
-import { setKeybinding } from "./keybinding.js"
 import { invoke } from "@tauri-apps/api/core"
-import { drpc } from "./drpc.js"
+import { setKeybinding } from "./keybinding.js"
 import { handleDeeplinks } from "./deeplink.js"
+import { drpc } from "./drpc.js"
 
 handleDeeplinks()
 setKeybinding()
