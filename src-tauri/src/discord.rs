@@ -10,7 +10,6 @@ use std::{
 
 static CURRENT_DETAILS: Mutex<String> = Mutex::new(String::new());
 
-#[tauri::command]
 pub fn drpc_init() {
     spawn(move || {
         let client_id = "1360671087637172315";
